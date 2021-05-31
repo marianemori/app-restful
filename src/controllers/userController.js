@@ -69,6 +69,9 @@ const controller = {
       const { id } = req.params;
       console.log(req.params)
       const user = await userRepository.deleteUser(id);
+       if (!user) {
+        throw new Error('O aluno não foi encontrado');
+      };
       res.json({msg: "Usuário deletado:" + id});
     } catch (e) {
       console.log(e);
