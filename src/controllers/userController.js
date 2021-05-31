@@ -3,12 +3,13 @@ const userRepository = require('../repositories/userRepository');
 const controller = {
 
   getAll: async (req, res) => {
+   
     try {
       const users = await userRepository.getAll();
       res.json(users);
     } catch (e) {
       console.log(e);
-      res.status(400).json({msg: "error", details: e});
+      res.status(400).json({msg: "Parâmetros inválidos"});
     }
   },
 
@@ -16,10 +17,13 @@ const controller = {
     try {
       const { id } = req.params;
       const user = await userRepository.getUserById(id);
+      if (user === null) {
+        throw new Error('O aluno não foi encontrado');
+      }
       res.json(user);
     } catch (e) { 
       console.log(e);
-      res.status(400).json({msg: "error", details: e});
+      res.status(404).json({msg: "O aluno não foi encontrado"});
     }
   },
 
@@ -29,20 +33,19 @@ const controller = {
       const user = await userRepository.postNewUser(req.body);
 
       if (!user) {
-        throw new Error('O Usuário não foi inserido');
+        throw new Error('O aluno não foi inserido');
       }
       res.json(user);
       
     } catch (e) {
       console.log(e);
-      res.status(400).json({msg: "error", details: e});
+      res.status(400).json({msg: "O aluno não foi inserido"});
     }
   },
 
-  putUser: async (req, res) => {
+  putUser: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const hasUser = await userRepository.getUserById(id);
 
       const userHasUpdate = await userRepository.putUser(req.body, id);
 
@@ -53,7 +56,7 @@ const controller = {
       res.json({msg: "Usuário atualizado:" + id});
     } catch (e) {
       console.log(e);
-      res.status(400).json({msg: "error", details: e});
+      res.status(404).json({msg: "Usuário não encontrado"});
     }
   },
     
@@ -65,7 +68,7 @@ const controller = {
       res.json({msg: "Usuário deletado:" + id});
     } catch (e) {
       console.log(e);
-      res.status(400).json({msg: "error", details: e});
+      res.status(404).json({msg: "Usuário não encontrado"});
     }
   }
 }

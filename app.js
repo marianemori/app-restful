@@ -4,9 +4,15 @@ const app = express();
 app.use(express.json());
  app.use('/', require('./src/routes/userRoutes'));
 
+ app.use('*', (req, res) =>{
+  return res.status(405).json({msg: "Endpoint inexistente"});
+
+ })
+
 app.listen(3000, function() {
   console.log('Server running!');
 });
+
 
   
 (async function () {
