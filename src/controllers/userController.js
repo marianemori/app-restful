@@ -5,7 +5,11 @@ const controller = {
   getAll: async (req, res) => {
    
     try {
-      const users = await userRepository.getAll();
+      const query = `SELECT * FROM user
+      WHERE name LIKE "%{req.query.name}"`
+      const users = await userRepository.getAll([
+        req.query.name
+      ]);
       res.json(users);
     } catch (e) {
       console.log(e);
